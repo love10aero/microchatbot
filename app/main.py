@@ -1,29 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from langchain_community.llms import LlamaCpp
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+
+from app.define_model import define_model
 
 app = FastAPI()
 
-MODEL_PATH = ".\model\mistral-7b-instruct-v0.1.Q4_0.gguf"
-
-# Initialize the LlamaCpp language model with configured settings
-llm = LlamaCpp(
-    model_path=MODEL_PATH,
-    n_gpu_layers=40,
-    n_batch=512,
-    verbose=False  # Set to True for debugging
-)
-
-# Define the prompt template for structured queries
-template = """
-Question: {question}
-
-Answer:
-"""
-prompt = PromptTemplate(template=template, input_variables=["question"])
-llm_chain = LLMChain(prompt=prompt, llm=llm)
+llm_chain = define_model()
 
 class UserQuery(BaseModel):
     question: str
